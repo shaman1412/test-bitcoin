@@ -26,6 +26,7 @@ class BitcoinService(
 
   @Transactional
   fun addBTC(addBtcRequest: AddBtcRequest) : BitcoinCompositeResponse{
+    log.info("Get message $addBtcRequest")
     val dateTime = DateUtils.resolveDateDefault(addBtcRequest.datetime!!)
     btcRepository.save(BtcEntity(null, dateTime, addBtcRequest.amount!!))
     return BitcoinCompositeResponse(STATUS200.value, messageSource.getMessage(ADD_BTC_COMPLETE, null, LocaleContextHolder.getLocale()))
@@ -33,7 +34,7 @@ class BitcoinService(
 
   @Transactional(readOnly = true)
   fun getTransactionHistoryDetail(searchBtcRequest: SearchBtcRequest) : List<AllBtcDetailResponse>{
-    log.info("Get message")
+    log.info("Get message $searchBtcRequest")
     val startDateTime = DateUtils.resolveDateDefault(searchBtcRequest.startDatetime!!)
     val endDateTime = DateUtils.resolveDateDefault(searchBtcRequest.endDatetime!!)
     return getBTCDetailDependOnDateTimeRange(startDateTime, endDateTime)

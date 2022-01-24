@@ -4,13 +4,28 @@ services:
   mysql:
     image: mysql:5.7
     restart: always
-    container_name: bitcoin-db-mysql
+    container_name: mysql_btc_db
     ports:
       - 3306:3306
     environment:
       MYSQL_DATABASE: btc_db
       MYSQL_ROOT_PASSWORD: root
-      #MYSQL_USER: test
-      #MYSQL_PASSWORD: test
     volumes:
+      - mysql_btc_db:/var/lib/mysql
       - ./dump:/docker-entrypoint-initdb.d
+  api:
+    container_name: api
+    image: test-bitcoin-img
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/btc_db
+    restart: on-failure
+
+volumes:
+  mysql_btc_db:

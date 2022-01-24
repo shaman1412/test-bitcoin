@@ -1,7 +1,18 @@
 # test-bitcoin
 
 #Setup
-- 
+- run "docker-compose up -d" in path: ~/test-bitcoin
+- **without docker you have to start DB mysql with DB name (btc_db) and create table with this command
+````
+CREATE TABLE btc (
+  id int NOT NULL AUTO_INCREMENT,
+  dateTime DATETIME,
+  amount DOUBLE,
+  PRIMARY KEY (id)
+);
+````
+link DB -> jdbc:mysql://localhost:3306/btc_db"
+then run "mvn spring-boot:run" with java 11
 
 After all setup complete you can test with dump data
 

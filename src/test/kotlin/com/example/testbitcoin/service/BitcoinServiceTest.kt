@@ -41,7 +41,7 @@ class BitcoinServiceTest {
   fun `verifyAddBTCIsSuccessful`(){
     val dateTimeCapture = argumentCaptor<BtcEntity>()
     Mockito.`when`(messageSource.getMessage(eq("add_btc_complete"), anyOrNull(), any())).thenReturn("add btc successful")
-    val response = bitcoinService.addBTC(AddBtcRequest("2011-10-05T10:48:01+00:00", "120"))
+    val response = bitcoinService.addBTC(AddBtcRequest("2011-10-05T10:48:01+00:00", BigDecimal("120")))
     Mockito.verify(btcRepository).save(dateTimeCapture.capture())
     assertEquals("2011-10-05T10:48:01",dateTimeCapture.firstValue.dataTime.toString())
     assertEquals(BigDecimal("120"),dateTimeCapture.firstValue.amount)
@@ -54,7 +54,7 @@ class BitcoinServiceTest {
   fun `verifyAddBTCIsSuccessfulWithDifferTimeZoneUTC+0700`(){
     val dateTimeCapture = argumentCaptor<BtcEntity>()
     Mockito.`when`(messageSource.getMessage(eq("add_btc_complete"), anyOrNull(), any())).thenReturn("add btc successful")
-    val response = bitcoinService.addBTC(AddBtcRequest("2011-10-05T10:48:01+07:00", "120"))
+    val response = bitcoinService.addBTC(AddBtcRequest("2011-10-05T10:48:01+07:00", BigDecimal("120")))
     Mockito.verify(btcRepository).save(dateTimeCapture.capture())
     assertEquals("2011-10-05T03:48:01",dateTimeCapture.firstValue.dataTime.toString())
     assertEquals(BigDecimal("120"),dateTimeCapture.firstValue.amount)
@@ -67,7 +67,7 @@ class BitcoinServiceTest {
   fun `verifyAddBTCIsSuccessfulWithDifferTimeZoneUTC-0700`(){
     val dateTimeCapture = argumentCaptor<BtcEntity>()
     Mockito.`when`(messageSource.getMessage(eq("add_btc_complete"), anyOrNull(), any())).thenReturn("add btc successful")
-    val response = bitcoinService.addBTC(AddBtcRequest("2011-10-05T10:48:01-07:00", "120"))
+    val response = bitcoinService.addBTC(AddBtcRequest("2011-10-05T10:48:01-07:00", BigDecimal("120")))
     Mockito.verify(btcRepository).save(dateTimeCapture.capture())
     assertEquals("2011-10-05T17:48:01",dateTimeCapture.firstValue.dataTime.toString())
     assertEquals(BigDecimal("120"),dateTimeCapture.firstValue.amount)
@@ -78,7 +78,7 @@ class BitcoinServiceTest {
 
   @Test
   fun `verifyAddBTCIsSuccessfulWithoutTimezone`(){
-    val btcException = assertThrows<BTCCompositeException> { bitcoinService.addBTC(AddBtcRequest("2011-10-05 10:48:01", "120"))  }
+    val btcException = assertThrows<BTCCompositeException> { bitcoinService.addBTC(AddBtcRequest("2011-10-05 10:48:01", BigDecimal("120")))  }
     Mockito.verify(btcRepository, times(0)).save(any())
     assertEquals("bc-400",btcException.code)
     assertEquals(HttpStatus.BAD_REQUEST,btcException.httpStatus)
