@@ -1,6 +1,6 @@
 # test-bitcoin
 #Setup
-- run "docker-compose up -d" in path: ~/test-bitcoin
+- you have to installed docker first then run "docker-compose up -d" in path: ~/test-bitcoin
 - **without docker you have to start DB mysql with DB name (btc_db) and create table with this command
 ````
 CREATE TABLE btc (
