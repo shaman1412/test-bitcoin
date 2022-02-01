@@ -111,4 +111,13 @@ class BitcoinServiceTest {
     assertEquals(BigDecimal("40"),response[3].amount)
     assertEquals("2011-10-05T10:00:00+00:00",response[3].startDatetime)
   }
+
+  @Test
+  fun `verifyGetBtcHistoryDetailIsSuccessfulWithNull`(){
+    val startDateTimeCapture = argumentCaptor<LocalDateTime>()
+    val endDateTimeCapture = argumentCaptor<LocalDateTime>()
+    Mockito.`when`(btcRepository.getBtcWithTimeRangeInHour(startDateTimeCapture.capture(), endDateTimeCapture.capture()))
+      .thenReturn(null)
+    val response = bitcoinService.getTransactionHistoryDetail(SearchBtcRequest("2011-10-05T08:48:01+00:00", "2011-10-05T11:48:01+00:00"))
+  }
 }

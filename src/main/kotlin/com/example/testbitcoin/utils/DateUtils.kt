@@ -5,6 +5,7 @@ import com.example.testbitcoin.exception.BTCCompositeException
 import com.example.testbitcoin.service.BitcoinService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import java.sql.Date
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -26,15 +27,21 @@ class DateUtils {
       }
     }
 
-    fun formatDateTimeForResponse(localDate: LocalDateTime): String{
+    fun formatDateTimeForResponse(localDateTime: LocalDateTime): String{
       try {
-        val dateWithZone = localDate.atZone(ZoneId.of("+00:00"))
+        val dateWithZone = localDateTime.atZone(ZoneId.of("+00:00"))
         val responseDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         return dateWithZone.format(responseDateFormat) + "+00:00"
       }catch (ex : DateTimeParseException){
-      log.error("Cant pares date time format : $localDate")
-      throw BTCCompositeException(BAD_REQUEST, STATUS400.value, "Cant pares date time format : $localDate")
+      log.error("Cant pares date time format : $localDateTime")
+      throw BTCCompositeException(BAD_REQUEST, STATUS400.value, "Cant pares date time format : $localDateTime")
       }
     }
+
+    fun formatDateTimeWithHour(dateTime : Date, hour: Int) : String{
+      val newDateTime = dateTime.toLocalDate().atStartOfDay().withHour(hour)
+      return formatDateTimeForResponse(newDateTime)
+    }
   }
+
 }
