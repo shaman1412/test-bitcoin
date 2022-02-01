@@ -25,6 +25,3 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/btc_db
     restart: on-failure
-
-volumes:
-  mysql_btc_db:
