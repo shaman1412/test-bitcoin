@@ -11,11 +11,12 @@ import com.example.testbitcoin.utils.DateUtils
 import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
-@Service
+@Component
 class BitcoinService(
   val messageSource : MessageSource,
   val btcRepository : BtcRepository
@@ -41,7 +42,23 @@ class BitcoinService(
 
   private fun getBTCDetailDependOnDateTimeRange(startDateTime : LocalDateTime, endDateTime : LocalDateTime ) : List<AllBtcDetailResponse>{
     val allBtcDetail = btcRepository.getBtcWithTimeRangeInHour(startDateTime, endDateTime)
-    return allBtcDetail.map { AllBtcDetailResponse(DateUtils.formatDateTimeWithHour(it.getDate(), it.getHour()), it.getTotalAmount())}
+    val mapCountToHour = HashMap<String, BigDecimal>()
+    for(btcDetails in allBtcDetail){
+      val translatedDateTimeKey = translateTimeToHour(btcDetails.dataTime)
+      val amount = btcDetails.amount
+      if (mapCountToHour.containsKey(translatedDateTimeKey)){
+        mapCountToHour[translatedDateTimeKey] = mapCountToHour[translatedDateTimeKey]!!.plus(amount)
+      }else{
+        mapCountToHour[translatedDateTimeKey] = amount
+      }
+    }
+    return mapCountToHour.toList().map { AllBtcDetailResponse(it.first, it.second) }
   }
+
+  private fun translateTimeToHour(dateTime : LocalDateTime) : String{
+    val newDateTime = LocalDateTime.from(dateTime).withHour(dateTime.hour).withMinute(0).withSecond(0)
+    return DateUtils.formatDateTimeForResponse(newDateTime)
+  }
+
 
 }
