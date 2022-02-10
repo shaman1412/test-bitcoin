@@ -1,5 +1,6 @@
 package com.example.testbitcoin.repositories
 
+import com.example.testbitcoin.dto.GetBitcoinTransaction
 import com.example.testbitcoin.entities.BtcEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query

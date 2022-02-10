@@ -13,7 +13,6 @@ import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Component
@@ -44,11 +43,5 @@ class BitcoinService(
     val allBtcDetail = btcRepository.getBtcWithTimeRangeInHour(startDateTime, endDateTime)
     return allBtcDetail?.map { AllBtcDetailResponse(DateUtils.formatDateTimeWithHour(it.getDate(), it.getHour()), it.getTotalAmount())}.orEmpty()
   }
-
-  private fun translateTimeToHour(dateTime : LocalDateTime) : String{
-    val newDateTime = LocalDateTime.from(dateTime).withHour(dateTime.hour).withMinute(0).withSecond(0)
-    return DateUtils.formatDateTimeForResponse(newDateTime)
-  }
-
 
 }
