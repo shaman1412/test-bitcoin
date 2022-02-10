@@ -42,17 +42,7 @@ class BitcoinService(
 
   private fun getBTCDetailDependOnDateTimeRange(startDateTime : LocalDateTime, endDateTime : LocalDateTime ) : List<AllBtcDetailResponse>{
     val allBtcDetail = btcRepository.getBtcWithTimeRangeInHour(startDateTime, endDateTime)
-    val mapCountToHour = HashMap<String, BigDecimal>()
-    for(btcDetails in allBtcDetail){
-      val translatedDateTimeKey = translateTimeToHour(btcDetails.dataTime)
-      val amount = btcDetails.amount
-      if (mapCountToHour.containsKey(translatedDateTimeKey)){
-        mapCountToHour[translatedDateTimeKey] = mapCountToHour[translatedDateTimeKey]!!.plus(amount)
-      }else{
-        mapCountToHour[translatedDateTimeKey] = amount
-      }
-    }
-    return mapCountToHour.toList().map { AllBtcDetailResponse(it.first, it.second) }
+    return allBtcDetail?.map { AllBtcDetailResponse(DateUtils.formatDateTimeWithHour(it.getDate(), it.getHour()), it.getTotalAmount())}.orEmpty()
   }
 
   private fun translateTimeToHour(dateTime : LocalDateTime) : String{
